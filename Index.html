@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cipherguard · Password Security Analyzer</title>
+<meta name="description" content="Generate strong passwords and see exactly how secure they are." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="brand__mark" width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <path d="M16 2 L28 7 V15 C28 22.5 22.7 27.8 16 30 C9.3 27.8 4 22.5 4 15 V7 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="16" cy="14" r="3.4" stroke="currentColor" stroke-width="2"/>
+      <path d="M16 17.4 V21.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <div class="brand__text">
+      <span class="brand__name">Cipherguard</span>
+      <span class="brand__tag">Password security console</span>
+    </div>
+  </div>
+
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" aria-pressed="false">
+    <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="theme-toggle__track"><span class="theme-toggle__thumb"></span></span>
+    <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+
+<main class="layout">
+
+  <!-- ============ GENERATOR / ANALYZER PANEL ============ -->
+  <section class="panel panel--main" aria-labelledby="genHeading">
+    <div class="panel__head">
+      <h1 id="genHeading">Build or test a password</h1>
+      <p class="panel__sub">Generate one below, or type your own into the readout to see how it holds up.</p>
+    </div>
+
+    <!-- LCD-style readout -->
+    <div class="readout" id="readoutWrap">
+      <input
+        id="passwordField"
+        class="readout__input"
+        type="text"
+        inputmode="text"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        placeholder="Your password will appear here"
+        aria-label="Generated or typed password"
+      />
+      <div class="readout__actions">
+        <button class="icon-btn" id="toggleVisibility" type="button" aria-label="Show password" aria-pressed="false" title="Show / hide">
+          <svg class="eye-open" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
+          <svg class="eye-closed" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 3l18 18M10.6 10.7a3 3 0 0 0 4.2 4.2M6.6 6.8C4.4 8.3 2.9 10.5 2 12c0 0 3.6 7 10 7 1.8 0 3.4-.5 4.8-1.3M9.9 5.2A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7-.5.9-1.3 2.1-2.5 3.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-btn" id="regenBtn" type="button" aria-label="Generate new password" title="Generate">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.6-4.6M4 13a8 8 0 0 0 14.6 4.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 4v5h5M20 20v-5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn" id="copyBtn" type="button" aria-label="Copy password" title="Copy">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <span class="readout__toast" id="copyToast" role="status" aria-live="polite">Copied</span>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="control-row control-row--length">
+        <label for="lengthSlider">Length</label>
+        <div class="slider-wrap">
+          <input type="range" id="lengthSlider" min="6" max="32" value="16" />
+          <span class="length-value" id="lengthValue">16</span>
+        </div>
+      </div>
+
+      <div class="chip-grid" role="group" aria-label="Character types">
+        <label class="chip">
+          <input type="checkbox" id="optUpper" checked />
+          <span class="chip__label">A–Z</span>
+          <span class="chip__sub">Uppercase</span>
+        </label>
+        <label class="chip">
+          <input type="checkbox" id="optLower" checked />
+          <span class="chip__label">a–z</span>
+          <span class="chip__sub">Lowercase</span>
+        </label>
+        <label class="chip">
+          <input type="checkbox" id="optNumbers" checked />
+          <span class="chip__label">0–9</span>
+          <span class="chip__sub">Numbers</span>
+        </label>
+        <label class="chip">
+          <input type="checkbox" id="optSymbols" checked />
+          <span class="chip__label">#%&amp;</span>
+          <span class="chip__sub">Symbols</span>
+        </label>
+      </div>
+
+      <label class="switch-row">
+        <input type="checkbox" id="optAmbiguous" />
+        <span class="switch"></span>
+        <span class="switch-row__text">Avoid look-alike characters <em>(0, O, 1, l, I)</em></span>
+      </label>
+
+      <button class="btn btn--primary" id="generateBtn" type="button">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Generate password
+      </button>
+    </div>
+
+    <!-- Security dial -->
+    <div class="dial-block">
+      <svg class="dial" viewBox="0 0 200 120" aria-hidden="true">
+        <path class="dial__track" d="M10 100 A 90 90 0 0 1 190 100" />
+        <path class="dial__fill" id="dialFill" d="M10 100 A 90 90 0 0 1 190 100" />
+        <line class="dial__tick" x1="10" y1="100" x2="19" y2="100" />
+        <line class="dial__tick" x1="35.2" y1="43.2" x2="41.7" y2="47.5" />
+        <line class="dial__tick" x1="100" y1="10" x2="100" y2="19" />
+        <line class="dial__tick" x1="164.8" y1="43.2" x2="158.3" y2="47.5" />
+        <line class="dial__tick" x1="190" y1="100" x2="181" y2="100" />
+        <line class="dial__needle" id="dialNeedle" x1="100" y1="100" x2="100" y2="25" />
+        <circle class="dial__pivot" cx="100" cy="100" r="5" />
+        <text class="dial__caption" x="10" y="114" text-anchor="start">WEAK</text>
+        <text class="dial__caption" x="190" y="114" text-anchor="end">STRONG</text>
+      </svg>
+      <div class="dial__readout">
+        <span class="dial__score" id="scoreLabel">Strength: —</span>
+        <span class="dial__bits" id="bitsLabel">Enter or generate a password to begin</span>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="suggestions" id="suggestions" aria-live="polite">
+      <h2 class="suggestions__heading">Analysis</h2>
+      <ul class="suggestions__list" id="suggestionsList">
+        <li class="suggestion suggestion--idle">Your security notes will show up here once there's a password to check.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ HISTORY PANEL ============ -->
+  <aside class="panel panel--history" aria-labelledby="historyHeading">
+    <div class="panel__head panel__head--row">
+      <div>
+        <h2 id="historyHeading">Password log</h2>
+        <p class="panel__sub">Stored only on this device.</p>
+      </div>
+      <button class="btn btn--ghost btn--small" id="clearHistoryBtn" type="button">Clear all</button>
+    </div>
+
+    <ul class="history-list" id="historyList">
+      <li class="history-empty" id="historyEmpty">No passwords generated yet. Generate one and it'll be logged here.</li>
+    </ul>
+  </aside>
+
+</main>
+
+<footer class="footer">
+  <p>Everything runs locally in your browser. Nothing is sent anywhere, ever.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
