@@ -1,0 +1,25 @@
+# Smart Password Security Analyzer
+
+A frontend-based password generator and security analyzer built using HTML, CSS, and JavaScript.
+
+## Features
+
+- Random password generation
+- Custom password length
+- Uppercase/lowercase selection
+- Number and special character support
+- Password strength analysis
+- Security suggestions
+- Copy password feature
+- Password history
+- Responsive UI
+
+## Technologies Used
+
+- HTML5
+- CSS3
+- JavaScript
+
+## Live Demo
+
+(Add your deployed URL here)
